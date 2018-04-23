@@ -1,6 +1,6 @@
 ;----------------------------------------------------
 ;GENESIS ASM: Pong 0.0
-;(A basic game of pong)
+;(A technically functional game of Pong)
 ;by Saad Azim
 ;----------------------------------------------------
 
