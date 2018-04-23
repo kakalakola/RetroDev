@@ -4,7 +4,6 @@
 ;by Saad Azim
 ;----------------------------------------------------
 
-
 ;Defining variables, of sort
 ;Numbers, basically...
 _intXMin equ $0080
@@ -167,18 +166,17 @@ controller1Ok:
 
 skipSecurity:               ;Exactly what it sounds like ^_^
 
-
 skipSetup:                  ;Exactly what it sounds like ^_^
 
   move.w #$2700,sr          ;Disable NMI
 
-	move.w ($c00004).l,d0		;Read the contents of the VDP control port to initialize the VDP.
+  move.w ($c00004).l,d0    ;Read the contents of the VDP control port to initialize the VDP.
 
-	;clear RAM
-	moveq #0,d0					;Clear data register D0 (Move Q[uick] #0 fills the destination with 0-s)
+  ;clear RAM
+  moveq #0,d0          ;Clear data register D0 (Move Q[uick] #0 fills the destination with 0-s)
   move.w #$3fff,d1    ;Length of RAM/4 (ffff/4==3fff)
-	movea.l d0,a6				;copy the data to the address pointer
-	move.l a6,usp				;Copy the "address" ($00000000) to the user stack pointer
+  movea.l d0,a6        ;copy the data to the address pointer
+  move.l a6,usp        ;Copy the "address" ($00000000) to the user stack pointer
                       ;(The file I copied this off of leaves out the ".l".  Ths lead to quite a bit of a headache with asm68k)
 clearRamLoop:
   move.l d0,-(a6)
@@ -214,10 +212,10 @@ waitZ80BusReqLoop:
   lea (_ramPlayer1Sprite),a1
 
 initSpriteToRAMLoop:        ;Going with a rolling loop for the sake of simplicity, I think -_-'
-	move.l (a0)+,d1
-	move.l d1,(a1)+
-	move.l (a0)+,d1
-	move.l d1,(a1)+
+  move.l (a0)+,d1
+  move.l d1,(a1)+
+  move.l (a0)+,d1
+  move.l d1,(a1)+
   dbf d0,initSpriteToRAMLoop
 
   ;VDP stuff
@@ -231,11 +229,11 @@ initSpriteToRAMLoop:        ;Going with a rolling loop for the sake of simplicit
   lea (_ramPlayer1Sprite),a2;Sprite attribute data in RAM
   move.b #_intNumSprites,d2           ;Palette data length in longwords
 
-	lea (paletteDataStart),a3 ;Palette data
+  lea (paletteDataStart),a3 ;Palette data
   move.w #$001f,d3          ;Palette data length in longwords
 
-	lea ($c00000).l,a5			  ;load c00000 to to address pointer a5
-	lea ($c00004).l,a6			  ;load c00004 to to address pointer a6
+  lea ($c00000).l,a5        ;load c00000 to to address pointer a5
+  lea ($c00004).l,a6        ;load c00004 to to address pointer a6
 
 ;Initialize the VDP, and set the respective registers
 initVDPLoop:
@@ -243,29 +241,29 @@ initVDPLoop:
   move.w d0,(a6)
   dbf d4,initVDPLoop
 
-	move.w #$8f02,($c00004).l	;auto increment data by 2 bytes
+  move.w #$8f02,($c00004).l  ;auto increment data by 2 bytes
 
 ;Copy tiles from ROM to VDP RAM
-	move.l #$40000000,(a6)    ;point the data port to $0000, start of the vram i.e. write stuff sent to $c00000 to $0000
+  move.l #$40000000,(a6)    ;point the data port to $0000, start of the vram i.e. write stuff sent to $c00000 to $0000
 initTileLoop:
-	move.l (a1)+,d0
-	move.l d0,(a5)
+  move.l (a1)+,d0
+  move.l d0,(a5)
   dbf d1,initTileLoop
 
 ;Copy sprite attributes from RAM to VDP RAM
   move.l #$44000000,(a6)    ;Set the control port $00c00004 to point to $0400 in VRAM
 initSpriteLoop:
-	move.l (a2)+,d0
-	move.l d0,(a5)
-	move.l (a2)+,d0
-	move.l d0,(a5)
+  move.l (a2)+,d0
+  move.l d0,(a5)
+  move.l (a2)+,d0
+  move.l d0,(a5)
   dbf d2,initSpriteLoop
 
 ;Copy palette from ROM to VDP RAM
   move.l #$c0000000,(a6)    ;Set the control port $00c00004 to point to $c0000000 in VRAM
 initPaletteLoop:
-	move.l (a3)+,d0						;Using long to write 32 bits of data, with 1f ^_^
-	move.l d0,(a5)
+  move.l (a3)+,d0            ;Using long to write 32 bits of data, with 1f ^_^
+  move.l d0,(a5)
   dbf d3,initPaletteLoop
 
   ;Copy game variables to RAM
@@ -412,7 +410,6 @@ movePlayer2Up:
   sub.w d0,_ramPlayer2Y
   jmp readController1
 
-
 readController1:
   moveq.l #0,d5
   moveq.l #0,d6             ;Clear d6
@@ -427,8 +424,8 @@ waitZ80BusReqControllerLoop:
   lea $a10003,a0            ;Store address of controller port 1 to address register
 
   ;Hit 00 returns #$7f
-  move.b #$40,(a0)          ;Set bit 7 (hex $40) in controller 1 data port.
-                            ;This returns (x1CBRLDU), which you dont really need to read, since it repeats
+  move.b #$40,(a0)          ;–Set bit 7 (hex $40) in controller 1 data port.
+                            ;This returns (x1CBRLDU), which you don’t really need to read, since it repeats
   nop                       ;Wait for two cycles
   nop                       ;Since this is the first hit, can't skip the NOPs
 
@@ -459,7 +456,6 @@ waitZ80BusReqControllerLoop:
 ;;  btst #0,d6
 ;;  bne.s skipMXYZ
 
-
   move.b (a0),d7            ;Store the results to d7 (01CBMXYZ)
 ;;  ;Debug bit
 ;;  move.b (a0),$ff2008
@@ -485,11 +481,9 @@ skipMXYZ:
 ;;  nop
 ;;  move.b (a0),$ff200e
 
-
-
   move.w d5,(_ramController01);Store controller state to RAM
 
-  move.b #0,(a0)            ;Set bit 7 to $00 in controller 1 data port to reset things (x0SA1111).?
+  move.b #0,(a0)            ;Set bit 7 to $00 in controller 1 data port to reset things (x0SA1111)….?
   move.w #0,($a11100)       ;Release Z80 bus after reading the controller
 
 ;Calculate player movement
@@ -530,7 +524,6 @@ checkP2YMax:
   blt.s subNext
   move.w #_intYMax,(a1)
 
-
 subNext:
   jmp mainLoop              ;Loop indefinitely
 
@@ -544,9 +537,7 @@ vblank:
 
   ;Clear d1
   moveq.l #0,d1
-
   addq #1,($ff0068)
-
 
   ;Reset runOnce flag
   ;Copy sprite data from RAM to VDP RAM
@@ -555,19 +546,17 @@ vblank:
   lea (_ramPlayer1Sprite),a0;Sprite attribute data in RAM
   move.b #_intNumSprites,d1 ;For some reason d2 works, but d1 doesn't...?
 
-
-	lea ($c00000).l,a1			  ;load c00000 to to address pointer a5
-	lea ($c00004).l,a2			  ;load c00004 to to address pointer a6
+  lea ($c00000).l,a1        ;load c00000 to to address pointer a5
+  lea ($c00004).l,a2        ;load c00004 to to address pointer a6
   move.w #$8f02,(a2)
-
 
 ;Copy sprite attributes from RAM to VDP RAM
   move.l #$44000000,(a2)    ;Set the control port $00c00004 to point to $0400 in VRAM
 initSpriteLoopVBlank:
-	move.l (a0)+,d0
-	move.l d0,(a1)
-	move.l (a0)+,d0
-	move.l d0,(a1)
+  move.l (a0)+,d0
+  move.l d0,(a1)
+  move.l (a0)+,d0
+  move.l d0,(a1)
   dbf d1,initSpriteLoopVBlank
 
   ;Having done all the time-critical things in during VBlank, it's time to reset runOnce flag
@@ -764,8 +753,6 @@ vdpConfigStart:
   dc.w $9500                ;DMA Source Lo
   dc.w $9600                ;DMA Source Mid
   dc.w $9700                ;DMA Source Hi
-
-
 vdpConfigEnd:
 
 tileDataStart:
@@ -833,7 +820,7 @@ tileDataStart:
   dc.l $11111111
   dc.l $11111111
   dc.l $11111111
-  
+ 
 tileDataEnd:
 
 spriteDataStart:
@@ -928,8 +915,5 @@ paletteDataStart:
   dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000
   dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0f99,$0fbb,$0fdd,$0fff
 paletteDataEnd:
-
-
-
 
 romEnd:
