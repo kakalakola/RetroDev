@@ -2,6 +2,7 @@
 ;GENESIS ASM: Pong 0.0
 ;(A technically functional game of Pong)
 ;by Saad Azim
+;Released under GNU GPL 3.0
 ;----------------------------------------------------
 
 ;Defining variables, of sort
