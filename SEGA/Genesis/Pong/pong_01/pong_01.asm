@@ -471,8 +471,8 @@ waitZ80BusReqControllerLoop:
   lea $a10003,a0            ;Store address of controller port 1 to address register
 
   ;Hit 00 returns #$7f
-  move.b #$40,(a0)          ;–Set bit 7 (hex $40) in controller 1 data port.
-                            ;This returns (x1CBRLDU), which you don’t really need to read, since it repeats
+  move.b #$40,(a0)          ;Â–Set bit 7 (hex $40) in controller 1 data port.
+                            ;This returns (x1CBRLDU), which you donÂ’t really need to read, since it repeats
   nop                       ;Wait for two cycles
   nop                       ;Since this is the first hit, can't skip the NOPs
 
@@ -533,7 +533,7 @@ skipMXYZ:
 
   move.w d5,(_ramController01);Store controller state to RAM
 
-  move.b #0,(a0)            ;Set bit 7 to $00 in controller 1 data port to reset things (x0SA1111)….?
+  move.b #0,(a0)            ;Set bit 7 to $00 in controller 1 data port to reset things (x0SA1111)Â….?
   move.w #0,($a11100)       ;Release Z80 bus after reading the controller
 
 ;Calculate player movement
