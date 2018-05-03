@@ -7,6 +7,7 @@
 ;    a set number of frames
 ; +- Cleaned up earlier code, with less comments
 ; +- Tweaked branching, adding ".s" where needed :3
+; - Using the Z80 for ... stuff
 ;----------------------------------------------------
 
 
@@ -55,8 +56,11 @@ _ramBallFlags equ $ff0110
 _ramBallSpeedX equ $ff0112
 _ramBallSpeedY equ $ff0114
 
+_ramSoundEffects equ $ff0120
+_ramSoundEffectsZ80 equ $a00801
+
 vectors:
-  dc.l $fffe00,codeStart,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,hblank,error,vblank,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error
+  dc.l $fffe00,codeStart,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,hBlank,error,vBlank,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error,error
 
   ;ROM header, starting from $000100
   dc.b "SEGA GENESIS    "   ;Console name Genesis/Mega Drive, must be 16 characters long
@@ -123,16 +127,28 @@ clearRamLoop:
   move.b ($a11101),d6
 
   move.b #$01,($a11100)     ;Request Z80 Bus, same as move.w #$0100
-  move.w #$0100,($a11200)   ;Request Z80 reset
+  move.w #$0100,($a11200)   ;Request Z80 reset, which stop the Z80
 waitZ80BusReqLoop:
   move.b ($a11101),d7
   btst #0,($a11101)         ;Check bit 0 of Z80 bus request register
   bne.s waitZ80BusReqLoop   ;Wait until the Z80 bus is available
 
+  ;Once the Z80 has reset...
   moveq #$40,d0             ;Copy #$40 to d0
   move.b d0,$a10009         ;Configure controller 1 port
   move.b d0,$a1000b         ;Configure controller 2 port
   move.b d0,$a1000d         ;Configure expansion port
+
+  ;Copy the compiled Z80 binary to Z80 RAM
+  lea (z80CodeStart),a0     ;Load the address of the compiled Z80 code to a0
+  lea ($a00000),a1          ;Load the address of the start of the Z80 RAM to a1
+
+  move.w #(z80CodeEnd-z80CodeStart),d1;Load the length of the Z80 init code to d1
+
+z80DataCopyLoop:
+  move.b (a0)+,(a1)+        ;Move the contents from location stored a0 to location stored in a1.
+                            ;Then increment both locations by 1
+  dbra d1,z80DataCopyLoop   ;Decrease d1 by 1. If d1==0, move on, else branch to z80InitProgramLoop
 
   move.b #$0,($a11200)      ;Disable Z80 reset
   move.b #$0,($a11100)      ;Disable the bus
@@ -305,10 +321,16 @@ checkBoundaryRight:
   bra.s testBallY
 
 resetBallX:
+  ;Set SFX Flag for score
+  move.b #2,_ramSoundEffects;Set _ramSoundEffects to 2
+                            ;Useful on the Z80 side for jump tables
+
   bchg #0,_ramBallFlags     ;BitCHanGe - change bit 0 of _ramBallFlag
                             ;Oh GOD, this would've been SO much work on a 6502!! >.<'
   move.w #_intXCenter,_ramBallX
   move.w #_intYCenter,_ramBallY
+
+
 
 testBallY:
   btst #1,_ramBallFlags
@@ -329,6 +351,9 @@ moveBallDown:
   bra.s player2AI
 
 flipBallY:
+  ;Set SFX Flag for bounce
+  move.b #4,_ramSoundEffects;Set _ramSoundEffects to 2
+                            ;Useful on the Z80 side for jump tables
   bchg #1,_ramBallFlags
 
 ;Modified in v 0.1 - Player 2 AI
@@ -374,6 +399,7 @@ readController1:
   moveq.l #0,d7             ;Clear d7
 
   move.b #$01,$a11100       ;Request Z80 Bus before reading the controller
+;;;;  move.w #$0100,($a11200)   ;Request Z80 reset, dont want simultaneous writes by *BOTH* CPUs
 waitZ80BusReqControllerLoop:
   btst #0,$a11101
   bne.s waitZ80BusReqControllerLoop
@@ -443,7 +469,14 @@ skipMXYZ:
   move.w d5,(a1)            ;Store controller state to RAM
 
   move.b #0,(a0)            ;Set bit 7 to $00 in controller 1 data port to reset things (x0SA1111)….?
-  move.w #0,$a11100        ;Release Z80 bus after reading the controller
+
+
+  ;Point the 
+  move.b _ramSoundEffects,_ramSoundEffectsZ80;Copy _ramSoundEffects to Z80 RAM $0801
+;;;;  move.b #$0,($a11200)      ;Disable Z80 reset
+  move.b #$0,($a11100)      ;Release the bus
+  ;The Z80 doesn't start up until its been reset
+;;;;  move.b #$1,($a11200)      ;Reset the Z80 again
 
 ;Calculate player movement
 
@@ -486,10 +519,10 @@ checkP2YMax:
 subNext:
   jmp mainLoop              ;Loop indefinitely
 
-hblank:
+hBlank:
   rte
 
-vblank:
+vBlank:
   ;Move the contents of d0-d7 & a0-a6 to the stack
   movem.l d0-d7/a0-a6,-(a7)
 
@@ -581,5 +614,12 @@ paletteDataStart:
   dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000
   dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0f99,$0fbb,$0fdd,$0fff
 paletteDataEnd:
+
+
+z80CodeStart:
+  incbin "z80_sound_driver.bin";Compiled Z80 binary
+z80CodeEnd:
+
+
 
 romEnd:
