@@ -152,7 +152,7 @@ clearRamLoop:
 
   ;This should look familiar
   move.l #$c0000000,(a0)    ;Set the control port $c00004 to
-                            ;point to $00 in VRAM
+                            ;point to $00 in CRAM
   move.w #$000e,(a1)        ;Send a color value to the data port $c00000
                             ;which gets written to $00 in CRAM
 
