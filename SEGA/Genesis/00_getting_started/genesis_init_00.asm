@@ -179,6 +179,6 @@ main:
 error:
   jmp error                 ;Loop indefinitely... again?
 
-  ;Fun to think all this compiles to 54 bytes of code ^_^
+  ;Fun to think all this compiles to a 200 byte header, and 54 bytes of actual code ^_^
 
 romEnd:                     ;That's all folks.
