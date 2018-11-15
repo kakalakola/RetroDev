@@ -1,4 +1,4 @@
-How to play:
+####How to play:####
 
 The traditional way: https://www.carpeludum.com/kega-fusion/
 
