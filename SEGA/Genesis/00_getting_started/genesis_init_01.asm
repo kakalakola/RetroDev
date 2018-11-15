@@ -81,7 +81,8 @@
 
 ;Beginning of code at $0200
 codeStart:
-  move.w #$2700,sr          ;Disable ALL interrupts
+  move.w #$2700,sr          ;Disable ALL interrupts by copying #$2700 to
+                            ;the System Register
 
   ;Check TMSS
   move.b $a10001,d0
@@ -99,15 +100,17 @@ noTMSS:
                             ;MOVE Quick #0 fills the destination register with 0s
 
   move.w #$3fff,d1          ;Length of RAM/4 (ffff/4==3fff)
-  movea.l d0,a6             ;copy $00000000 as an address to
-                            ;the address register A6
-  move.l a6,usp             ;Copy the address stored in A6 ($00000000)
+
+  movea.l d0,a0             ;copy $00000000 to the address register a0
+                            ;as an address
+
+  move.l a0,usp             ;Copy the address stored in a0 ($00000000)
                             ;to the user stack pointer
 clearRamLoop:
-  move.l d0,-(a6)           ;Decrement the address stored in A6,
+  move.l d0,-(a0)           ;Decrement the address stored in a0,
                             ;then copy the contents of D0 to said address. The contents of D0, #$00000000 gets copied to $fffffc in the first loop, $fffff8 in the second loop, and so forth; until the counter in D1 reaches 0, at which point the last value is copied to $ff0000
 
-                            ;Address increment/decrements are size sensitive, so move.l d0,-(a6) decrements A6 by 4 bytes, move.w d0,-(a6) would decrement A6 by 2 bytes, and move.b d0,-(a6) would decrement A6 by 1 byte
+                            ;Address increment/decrements are size sensitive, so move.l d0,-(a0) decrements a0 by 4 bytes, move.w d0,-(a0) would decrement a0 by 2 bytes, and move.b d0,-(a0) would decrement a0 by 1 byte
 
   dbf d1,clearRamLoop       ;Decrease and Branch if False (i.e.
                             ;not equal to 0) to clearRamLoop.
@@ -121,7 +124,6 @@ clearRamLoop:
   ;Setup address registers for VDP ports, so the code structure is along the lines of "write to a0, then write to a1".
   lea $c00004,a0  
   lea $c00000,a1           
-
 
   move.w (a0),d0            ;Read the contents of the VDP control port
                             ;to initialize the VDP. The actual contents of D0 doesn't matter for this project
@@ -174,7 +176,6 @@ main:
                             ;Since the CPU stops after incrementing the data once, the data stored in $ff0000, and $ff0010 should increment at the same rate. In fact, the difference between them should be 1, at most.
 
   jmp main
-
 
 ;Vertical Interrupt subroutine
 vBlank:                     ;A.K.A. IRQ 6
