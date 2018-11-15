@@ -1,9 +1,6 @@
 #### How to play: ####
 
-The traditional way: https://www.carpeludum.com/kega-fusion/
-
-The fancy "I'm-a-programmer-too" way: http://mamedev.org/
-
-Download the emulator of your choice. Fusion is a traditional GUI affair. MAME ... isn't.
-
-Download the ROM (.bin) file, load it into an emulator of your choice, and that should be it.
+* 00_getting_started
+  * genesis_init_00.asm - A working MegaDrive/Genesis ROM
+  * genesis_init_01.asm - A properly initialized MD/Gen. ROM with a pair of counters in RAM
+* Pong: Self explanatory, methinks
