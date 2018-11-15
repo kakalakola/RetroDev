@@ -81,7 +81,7 @@
 
   ;ROM header, starting from $000100. Also 256 bytes long-word.
   dc.b "SEGA GENESIS    "   ;Console name Genesis/Mega Drive      $0100
-                            ;must be 16 characters long-word
+                            ;Must be 16 characters long-word
   dc.b "(C)LBP  "           ;(C)+Firm name/code, 8 characters     $0110
   dc.b "2018.NOV"           ;Build date, 8 characters             $0118   
 
