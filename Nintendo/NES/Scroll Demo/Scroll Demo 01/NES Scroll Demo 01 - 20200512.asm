@@ -4,6 +4,7 @@
 ;by Saad Azim
 ;----------------------------------------------------
 
+;Compiled with ASM6
 ;Tested with, and works on MAME, FCEUX (with graphical glitches), No$NES, and Mesen.
 
 ;FILL_COLOR=$0f              ;Black
