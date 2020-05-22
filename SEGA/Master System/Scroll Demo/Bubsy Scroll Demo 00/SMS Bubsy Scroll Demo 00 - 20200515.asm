@@ -366,7 +366,7 @@ descriptionInfo:
 
 ;Homebrew SDSC ROM header
   db "SDSC"                 ;SDSC in ASCII, to imply presense of an SDSC header
-  db $00,$01                ;Software version, in binary coded decimal (0.01)
+  db $00,$00                ;Software version, in binary coded decimal (00.00)
   db $22,$05,$20,$20        ;Date of release/recompilation, in BCD DD MM yyYY (22 05 2020)
   dw authorInfo             ;Pointer to author name
   dw nameInfo               ;Pointer to software name
@@ -376,7 +376,7 @@ descriptionInfo:
 
   db "TMR SEGA"             ;Required for Export SMS & GG       $7ff0-$7ff7
   db $00,$00                ;Reserved space, can be $00||$20    $7ff8-$7ff9
-  dw $8a9f                  ;Checksum for Export (US?) MS Bios  $7ffa-$7ffb
+  dw $8a9e                  ;Checksum for Export (US?) MS Bios  $7ffa-$7ffb
 
   db $00,$00,$00            ;BCD product & version code         $7ffc-7ffe
                             ;$27,$50,$10 results in product code 15027, version 0
