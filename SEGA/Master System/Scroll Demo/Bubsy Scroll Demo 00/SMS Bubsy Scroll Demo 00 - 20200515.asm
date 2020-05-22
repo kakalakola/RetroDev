@@ -11,7 +11,7 @@
 
 ;Compiled with tniASM
 ;Header calculated with I'm using SMSandGGHeaderReader
-;Tested with, and works on MAME, and Fusion
+;Tested with, and works on MAME, and Kega Fusion
 
 ;Specify the Z80 CPU, which is, hopefully, what powers the SMS
 cpu z80
