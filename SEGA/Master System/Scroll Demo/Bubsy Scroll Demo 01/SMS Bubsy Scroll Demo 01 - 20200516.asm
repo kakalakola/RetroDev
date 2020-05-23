@@ -13,7 +13,7 @@
 ;Header calculated with I'm using SMSandGGHeaderReader
 ;Tested with, and works on MAME, and Fusion
 
-;Specify the Z80 CPU, which is, hopefully, what powers the SMS
+;Specify the Z80 CPU
 cpu z80
 
 SCROLL_X_SPEED_LOW: equ $80
@@ -34,7 +34,7 @@ waveScroll: equ $c00e       ;2 bytes
 
 waveTable: equ $c010
 
-  ;Z80 Jump list                                        $0000-$00ff...?
+  ;Z80 Jump list                                                            $0000-$00ff
 
   ;Reset code, for system power-on
   di                        ;Disable interrupts
@@ -49,9 +49,9 @@ waveTable: equ $c010
   jp NMI
   ds $0100-$,$00
 
-Reset:                 ;Self explanatory           $0100...
+Reset:                 ;Self explanatory                                          $0100
   ;Clear registers
-  xor a                     ;Bitwise XOR on A with A, essentially resulting in $00...?
+  xor a                     ;Bitwise XOR on A with A, essentially resulting in $00
                             ;Resets Carry Negative-carry and Half-carry flag
                             ;Detects Parity/oVerflow flag
                             ;Zero/Sign flags are affected as defined
@@ -66,10 +66,8 @@ Reset:                 ;Self explanatory           $0100...
 
   ;The registers don't need to be "cleaned" since the next immediate action is to change their values anyway
 
-
   ;Clear RAM with fancy block copy
   xor a
-  ;ld a,$42                  ;For testing RAM & VRAM
 
   ld ($c000),a              ;Starting value
 
@@ -78,15 +76,18 @@ Reset:                 ;Self explanatory           $0100...
   ld bc,$2000
   ldir
 
+  ;Much like the SNES block copy, the Z80 block copy copies a byte of data from $c000(HL) to the $c001(DE), then increments both of them. The next move sees a byte copied from $c001(HL), to $c002(DE). BC basically determines how many times a byte gets copied to the next address.
+
   ;Set  stack pointer
   ld sp,$dff0
 
+  ;Point VDP write port to $0000 in RAM, by setting it to $4000
   ld a,$00
   out ($bf),a               ;OUTput (write) the contentent of A to port $bf, VDP write port
   ld a,$40
-  out ($bf),a               ;Point VDP write port to $4000 in VRAM
+  out ($bf),a
 
-  ;Copy tile data to VRAM with block copy
+  ;Copy tile data to VRAM
   ld hl,tiles               ;Set source to the location in tiles
   ld b,$40                  ;Set amount to be copied ($20 per tile)
   ld c,$be                  ;Set destination port
@@ -94,7 +95,8 @@ Reset:                 ;Self explanatory           $0100...
   otir                      ;Block copy $100 more bytes of data to VRAM
   otir                      ;Block copy $100 more bytes of data for a total of $240 bytes
 
-  ;Block copy tile map to VRAM ($1800), though the write port *needs* to be set to $17ff for ... ressons. -_-'
+
+  ;Block copy tile map to VRAM ($3800), though the write port *needs* to be set to $37ff for ... ressons. -_-'
   ld a,$ff
   out ($bf),a
   ld a,$37
@@ -115,7 +117,7 @@ Reset:                 ;Self explanatory           $0100...
   ;**NOTE**
   ;The tile map is $0700 bytes in size. This leaves $3f00 free to be used for sprite attribute data.
 
-  ;Copy BG colors to VRAM with block copy
+  ;Copy BG colors to VRAM
   ld a,$00
   out ($bf),a
   ld a,$c0
@@ -126,13 +128,15 @@ Reset:                 ;Self explanatory           $0100...
   ld c,$be
   otir
 
-  ;Copy wave table to RAM for better control
+  ;Copy wave table to RAM for to make life a little easier
   ld hl,waveOffset
   ld de,waveTable
   ld bc,$40
   ldir
-  ld hl,waveTable           ;At this point, DE is pointing to the right address
-                            ;So all that needs to be done are to set HL, and BC. The $40 bytes of data at waveOffset gets copied a total of 3 times. Having a table with $C0 bytes of data saves a little bit of calculation during HBlank IRQ
+
+  ;At this point, DE is pointing to at $waveTable+$40. So all that needs to be done are to set HL, and BC. The $40 bytes of data at waveOffset gets copied a total of 3 times. Having a table with $C0 bytes of data saves a little bit of calculation during HBlank IRQ
+
+  ld hl,waveTable
   ld bc,$80
   ldir
 
@@ -140,7 +144,7 @@ Reset:                 ;Self explanatory           $0100...
   ld hl,waveTable
   ld (wavePointer),hl
 
-  ;Configure screen scroll register number. Makes it easy to copy things with a block copy
+  ;Store screen scroll and wave scroll registers for block copy later on
   ld a,$88
   ld (screenScroll+1),a
   ld (waveScroll+1),a
@@ -156,13 +160,14 @@ Reset:                 ;Self explanatory           $0100...
   im 1                      ;Interrupt mode 1, jumps to $0038 when an interrupt is called
   ei                        ;Enable interrupts
 
-;Main loop with counter
-loop:
+loop:                       ;Main loop
 
+  ;Since there's an intertupt every scanline, it's best to use a flag to wait for VBlank
   ld a,(flagLoop)
   cp 0
   jp nz,loop
 
+  ;Update scrolls
   xor a
 
   ld a,(scrollXLow)
@@ -188,17 +193,16 @@ loop:
 storeYScroll:
   ld (screenScroll+2),a
 
+  ;Reset the low byte of wavePointer to $10
   ld a,$10
   ld (wavePointer),a
 
-  ;halt                      ;Wait for interrupt
   ld a,1
   ld (flagLoop),a
 
   jp loop
 
-;VInt/HInt
-IRQ:
+IRQ:                        ;Used for both Vblank and Hblank
 
   exx
   ex af,af'                 ;EXchange the contents of AF and AF'
@@ -377,8 +381,6 @@ nameTable:
   db 9,0,10,0,11,0,12,0,9,0,10,0,11,0,12,0,9,0,10,0,11,0,12,0,9,0,10,0,11,0,12,0
   db 13,0,14,0,15,0,16,0,13,0,14,0,15,0,16,0,13,0,14,0,15,0,16,0,13,0,14,0,15,0,16,0
   db 13,0,14,0,15,0,16,0,13,0,14,0,15,0,16,0,13,0,14,0,15,0,16,0,13,0,14,0,15,0,16,0
-
-
 
 vdpInit:                    ;Size $16
   db %00110110,$80          ;Register 0, VDP mode register 1
