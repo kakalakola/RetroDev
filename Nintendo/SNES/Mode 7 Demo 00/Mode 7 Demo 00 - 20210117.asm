@@ -384,6 +384,9 @@ vBlank:
   lda #_VBLANK_HDMA_ENABLE
   sta $420c
 
+  lda.w mode7MapConfig
+  sta $211a
+
   rep #$20                  ;A is 16-bit again
 
   lda $4210                 ;Read NMI register to clear NMI/VBlank flag
@@ -414,12 +417,12 @@ zero:
 
 mode7MapConfig:
   ;$211a - Mode 7 map config register
-  .db %01000000
+  .db %10000000
       ;|:|:|:|:
       ;|:|:|:|Horizontal screen flip
       ;|:|:|:Vertical screen flip
       ;|:xxxx
-      ;Area outside map (repeat map|display color 0|repeat tile 0)
+      ;Area outside map (repeat map|repeat map|display color 0|repeat tile 0)
 
 ppuWriteConfig:
   ;$2115 - PPU write config register
