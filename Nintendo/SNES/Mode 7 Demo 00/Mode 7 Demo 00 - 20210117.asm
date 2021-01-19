@@ -15,11 +15,11 @@
 .DEFINE mode7ScaleX      $10                     ;$0010
 .DEFINE mode7ScaleY      (mode7ScaleX+2)         ;$0012
 
-.DEFINE zNearX           (mode7ScaleY+2)        ;$0014
-.DEFINE zNearY           (zNearX+2)             ;$0016
+.DEFINE zNearX           (mode7ScaleY+2)         ;$0014
+.DEFINE zNearY           (zNearX+2)              ;$0016
 
-.DEFINE mode7CenterX     (zNearY+2)             ;$0018
-.DEFINE mode7CenterY     (mode7CenterX+2)       ;$001a
+.DEFINE mode7CenterX     (zNearY+2)              ;$0018
+.DEFINE mode7CenterY     (mode7CenterX+2)        ;$001a
 
 .DEFINE mode7ScrolLXL    $10                     ;$0010
 .DEFINE mode7ScrolLXH    (mode7ScrolLXL+2)       ;$0012
@@ -41,8 +41,8 @@
 
 .DEFINE _CAM_SPEED       $0140 ;In 8.8 format, only the high byte is used to determine camera scroll
 .DEFINE _MODE_7_START    $01 ;$00 disables HDMA
-.DEFINE _MODE_7_SCALE_X  $0001
-.DEFINE _MODE_7_SCALE_Y  $0002
+.DEFINE _MODE_7_SCALE_X  $0004
+.DEFINE _MODE_7_SCALE_Y  $0004
 .DEFINE _MAX_LINES       $e0 ;The SNES renders 224 lines
 
 .DEFINE _Z_NEAR_X        $0000 ;This works ... somehow ...
@@ -422,7 +422,8 @@ mode7MapConfig:
       ;|:|:|:|Horizontal screen flip
       ;|:|:|:Vertical screen flip
       ;|:xxxx
-      ;Area outside map (repeat map|repeat map|display color 0|repeat tile 0)
+      ;|Fill mode, if bit 6==1 (fill color|tile 0)
+      ;Extended map mode (repeat map|do not repeat map)
 
 ppuWriteConfig:
   ;$2115 - PPU write config register
