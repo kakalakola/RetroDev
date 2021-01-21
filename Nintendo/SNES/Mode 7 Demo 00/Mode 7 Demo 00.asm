@@ -352,7 +352,6 @@ noController:
   plp
   rti
 
-
 ;----------------------------------------------------
 ;IRQ/Error handler
 ;----------------------------------------------------
@@ -364,7 +363,6 @@ emptyHandler:
   inc $40
   wai
   jmp emptyHandler          ;Loop back to emptyHandler if the CPU is restarted, somehow
-
 
 ;----------------------------------------------------
 ;Code to handle inputs
@@ -608,7 +606,6 @@ dmaVBlankEnd:
                           ;|:x
                           ;|x (Used by HDMA)
                           ;Data direction (CPU>PPU|PPU>CPU)
-
   ;Word size
   ;000 - 1 address   (Byte 0 > $21xx)
   ;001 - 2 addresses (Byte 0 > $21xx, Byte 1 > $21xx+1)
