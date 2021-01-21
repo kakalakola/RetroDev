@@ -271,7 +271,6 @@ mainLoop:
   ;Prep data to be copied to Mode 7 registers
 
   ;Data definitions such as .DW & .DW require calculated values such as blockEnd-block or label+n to be in parenthesese. However lda/sta instruction requires the functions to NOT be in parentheses.
-
   lda scrollXScratchLo+1
   sta scrollX
   lda scrollYScratchLo+1
