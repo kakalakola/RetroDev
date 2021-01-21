@@ -52,7 +52,6 @@
 .define _SCALE_X_SPEED  $0080
 .define _SCALE_Y_SPEED  $0080
 
-
 ;The cartridge/ROM format used for this demo is a single bank 32K Fast LoROM. The format needs to be defined with WLA-65816 specific definitions. This also lets the assembler compute the necessary checksum & XOR
 .memorymap
   slotsize $8000            ;Size of slots, $8000 being the bare minimum
@@ -72,7 +71,6 @@
 .emptyfill $00              ;Fill empty bits of the ROM with $00
 .bank 0                     ;The lonely, solitary bank for this project
 .org $0000                  ;Program counter starts at $0000, ie. resetCode points to $0000 in ROM
-
 
 ;----------------------------------------------------
 ;START OF CODE
@@ -106,9 +104,6 @@ initCode:
 
   sep #$30                  ;SEt Processor bits, X,Y and A are set to 8-bit
                             ;SEP & REP #$10 affects X & Y, SEP & REP #$20 affects A
-;  lda #$8f
-;  sta $2100                 ;Brightness + screen enable register
-;                            ;(Screen off, full brightness)
 
   stz $2101                 ;Sprite register (size + address in VRAM)
   stz $2102                 ;Sprite register (address of sprite in memory [OAM])
@@ -149,17 +144,16 @@ initCode:
   stz $2116                 ;VRAM address, low
   stz $2117                 ;VRAM address, high
 
-  lda #1
   stz $211a                 ;Initialize Mode 7 settings reigster
 
   stz $211b                 ;Mode 7 matrix parameter A register,low
-  sta $211b                 ;Mode 7 matrix parameter A register, high
+  stz $211b                 ;Mode 7 matrix parameter A register, high
   stz $211c                 ;Mode 7 matrix parameter B register, low
   stz $211c                 ;Mode 7 matrix parameter B register, high
   stz $211d                 ;Mode 7 matrix parameter C register, low
   stz $211d                 ;Mode 7 matrix parameter C register, high
   stz $211e                 ;Mode 7 matrix parameter D register, low
-  sta $211e                 ;Mode 7 matrix parameter D register, high
+  stz $211e                 ;Mode 7 matrix parameter D register, high
 
   stz $211f                 ;Mode 7 center position S, low           
   stz $211f                 ;Mode 7 center position X, high
@@ -240,11 +234,8 @@ initCode:
   lda #_INIT_DMA1_START
   sta $420b
 
-;  lda $4210                 ;Read $4210 (and $4211) to clear any NMI/IRQ flags
-                            ;This needs to be done *BEFORE* enabling NMI & and ending force blank...?
-
   sep #$20                  ;A is 8-bit
-  
+
   lda #%00000001            ;Enable background 0
   sta $212c
 
@@ -304,7 +295,6 @@ vBlank:
   pha
 
   rep #$30                  ;A/X/Y are 16-bit
-
 
   ldx.w #dmaVBlank
   ldy.w #$4300
@@ -568,7 +558,6 @@ dmaInitRAM0:
   ;DMA 5: Initialize variables in RAM
   .row _DMA_BYTE_WRITE,$80,initVariables,$80,(initVariablesEnd-initVariables) ,0,0,0,0,0
 
-
   ;So ... this is where things get *weird*. Mode 7 stores its data in an interleaved format of TN PD TN PD format. The first byte (TN) is the Tile Number, which references one of the 256 available tiles. The second byte (PD) is Pixel Data, and it directly referencing one of the 256 colors in the palette.
 
   ;Since the VRAM write register is set to increment after writing to $2119, tile data for Mode 7 can be copied to VRAM without any further register modifications. :D
@@ -644,9 +633,7 @@ resetVariables:
   .table byte word word word byte
   .row 0,_SCROLL_X,0,_SCROLL_Y,0
   .row 0,_SCALE_X,0,_SCALE_Y,0
-
 initVariablesEnd:
-
 
 mode7MapConfig:
   ;$211a - Mode 7 map config register
@@ -862,8 +849,6 @@ mode7Map:                   ;A checkerboard pattern of light & dark tiles
   .db 1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2
   .db 2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1,2,1
 mode7MapEnd:
-
-
 
 ;----------------------------------------------------
 ;SNES ROM HEADER
