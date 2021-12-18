@@ -1,6 +1,7 @@
 ;----------------------------------------------------
-;SEGA CD - Program 00
-;A simple counter, incremented during the main CPU loop
+;SEGA CD ASM Project 0.0 - 2021.12.18
+;Getting things to work... -_-'
+;by Saad Azim
 ;----------------------------------------------------
 
 loopCounter equ $ff0010
