@@ -4,4 +4,4 @@ Messing around with 32X programming in assembly. The files are compiled as follo
  - ASM68K for the final ROM, which includes 68000 code, Z80 binary and SH2 binary files
 
 Project listing:
- - 32X Init - Deals with introductory stuff.
+ - 32X Init - Deals with introductory stuff
