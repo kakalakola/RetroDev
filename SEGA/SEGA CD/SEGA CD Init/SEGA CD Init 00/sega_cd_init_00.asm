@@ -54,7 +54,7 @@
   dc.b "SEGA GENESIS    "   ;Console name Genesis/Mega Drive                              $0100
                             ;Must be 16 characters
   dc.b "(C)LBP  "           ;(C)+Firm name/code, 8 characters                             $0110
-  dc.b "2021.JAN"           ;Build date (YYYY.MMM), 8 characters                          $0118   
+  dc.b "2021.DEC"           ;Build date (YYYY.MMM), 8 characters                          $0118   
 
   dc.b "SEGA CD COMPILATION/INITIALIZATION TEST         ";                                $0120
                             ;Domestic name, 48 characters
