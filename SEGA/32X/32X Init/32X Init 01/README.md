@@ -18,4 +18,4 @@ asmsh.exe  /i /o #+ /o psh2 /o w+ /p [input].asm, [output].bin
 asm68k.exe /o op+ /o os+ /o ow+ /o oz+ /o oaq+ /o osq+ /o omq+ /p /o ae- [input].asm, [output].bin
 
 #### Debugging ROM With MAME ####
-mame64.exe -verbose -debug -nofilter -waitvsync -window genesis -cart [path/to/compiledROM.bin]
+mame64.exe -verbose -debug -nofilter -waitvsync -window 32x -cart [path/to/compiledROM.bin]
