@@ -1,6 +1,6 @@
 #32X Init 00
 
-Compiling a working 32X rom.
+Compiling a working 32X rom. This demo sets up three counters, one for each of the SH2 CPUs, and one for the 68000 CPU. They increment values at $06000800, $06000810, and $ff0000 in RAM respectively.
 
 ----
 
