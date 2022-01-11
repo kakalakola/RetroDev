@@ -1,5 +1,5 @@
 ;----------------------------------------------------
-;32x ASM Project 0.0 - 68000 - 2021.12.18
+;32x ASM Project 0.0 - 68000 - 2022.01.11
 ;(Compiling a working file)
 ;by Saad Azim
 ;Reference:
@@ -11,13 +11,15 @@
 ; - www.valpocl.com/SuperVDP/SVDP.zip
 ;----------------------------------------------------
 
-;This is a *very* quick way to get the 32X to boot. In MAME, at any rate, since I don't have any way of testing on original hardware. All this does is setup 3 counters. The 68000, SH2 Master, and SH2 Slave increment their respective work RAM addresses at $ff0000, $06000800, and $06000810, respectively.
+;This is a *very* quick way to get the 32X to boot. In MAME, at any rate, since I don't have any way of testing on original hardware. All this does is setup three 32-bit counters. The 68000, SH2 Master, and SH2 Slave increment their respective work RAM addresses at $ff0000, $06000800, and $06000810.
+
+;Trying to read address $nnnnnn (even in MAME) will cause a crash. -_-
 
 ;Beyond that things seem to be somewhat glitchy. Trying to read OR write to D0 seems to crash MAME. Still, this seems to be the minimum amount (or close to it) of code needed to get a bootable 32X ROM.
 
 romSize equ (romEnd-$880001)
 
-  ;Considerations for a 32X ROM: On the 68000 side, all addresses need to be incremented by $880000. The 512kb cartridge area of $000000-$07ffff is remapped mapped to $880000-$9fffff. When RV bit in DMA request control register ($a15106) is set to 0, 4Mb of additional cartridge area can be accessed at $90000-$9fffff as a set of 4 pages (n00000-nfffff)
+  ;Considerations for a 32X ROM: On the 68000 side, all addresses need to be incremented by $880000. The 512kb cartridge area of $000000-$07ffff is remapped mapped to $880000-$9fffff. When RV bit in DMA request control register ($a15106) is set to 0, 4Mb of additional cartridge area can be accessed at $90000-$9fffff as a set of four 1 Mb pages (n00000-nfffff)
 
   org $880000
 
@@ -49,20 +51,20 @@ romSize equ (romEnd-$880001)
   dc.l 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
   ;Genesis header
-  dc.b "SEGA 32X        "   ;Console name Genesis/Mega Drive          $0100
+  dc.b "SEGA 32X        "   ;Console name 32x                         $0100
                             ;Must be 16 characters
   dc.b "(C)LBP  "           ;(C)+Firm name/code, 8 characters         $0110
   dc.b "2021.DEC"           ;Build date (YYYY.MMM), 8 characters      $0118   
 
-  dc.b "SEGA 32X COMPILATION/INITIALIZATION TEST 01     ";            $0120
+  dc.b "SEGA 32X COMPILATION/INITIALIZATION TEST 00     ";            $0120
                             ;Domestic name, 48 characters
-  dc.b "SEGA 32X COMPILATION/INITIALIZATION TEST 01     ";            $0150
+  dc.b "SEGA 32X COMPILATION/INITIALIZATION TEST 00     ";            $0150
                             ;Foreign name,48 characters
   dc.b "GM 00000000-01"     ;ROM Type, serial & version number        $0180
   dc.w $ffff                ;Checksum, 2 bytes                        $018e
   dc.b "J"                  ;Input support, up to 16 bytes,           $0190
 
-  dcb.b $8801a0-*," "       ;Variable padding until the *start of*$0001a0
+  dcb.b $8801a0-*," "       ;Variable padding until the *start of* $0001a0
 
   ;ROM Info: ROM start, ROM end, RAM start, RAM end; 16 bytes         $01a0
   dc.l $00000000,romSize,$00ff0000,$00ffffff
@@ -125,13 +127,13 @@ romSize equ (romEnd-$880001)
 
   ;Padding
   dcb.b $8803c0-*,0
-  dc.b "32X INIT TEST   "   ;32X header 16 bytes                $03c0-$03cf
+  dc.b "32X INIT TEST 00"   ;32X header 16 bytes                $03c0-$03cf
   dc.l $00000000            ;Version number                           $03d0
 
   ;32X RAM offsets
   dc.l (sh2Master-$880000)  ;Location of SH2 Master ROM in cart       $03d0
   dc.l $00000000            ;RAM offset to copy SH2 code into         $03d8
-  dc.l romEnd-sh2Master     ;Size of SH2 code (for Master & Slave)    $03dc
+  dc.l romEnd-sh2Master     ;Size of SH2 code (for Master & Slave)   $03dc
 
   dc.l $06000120            ;Master SH2 code start location           $03e0
                             ;(start of 32X RAM + $120), Address the Master SH2 jumps to, when booting
@@ -200,10 +202,8 @@ waitFor32x:                 ;Check to see if the 32X has initialized properly
   andi.b #$f,d0
   beq noTMSS
   move.l #"SEGA",$a14000
-
 noTMSS:
 
-  ;Clear a long word in RAM, then increment it continuously
   move.l #0,$ff0000
 mainLoop:
   move.l $ff0000,d0
@@ -217,7 +217,7 @@ error:
   cnop 0,4                  ;Data for SH2 need to be aligned by long word
 
 sh2Master:
-  incbin  "32x_init_00_sh2_master.bin"
+  incbin "32x_init_00_sh2_master.bin"
 sh2Slave:
-  incbin  "32x_init_00_sh2_slave.bin"
+  incbin "32x_init_00_sh2_slave.bin"
 romEnd:

@@ -1,10 +1,10 @@
 ;----------------------------------------------------
-;32x ASM Project 0.0 - 2021.12.18
+;32x ASM Project 0.0 - SH2 Slave - 2022.01.11
 ;(Compiling a working file)
 ;by Saad Azim
 ;----------------------------------------------------
 
-;Slave SH2 code
+;Slave SH2 code. Slave SH2 boot code does not need interrupts to be configured.
 SH2_S_STACK equ $0603ef00
 
   org $06000000

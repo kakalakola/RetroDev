@@ -1,12 +1,11 @@
 ;----------------------------------------------------
-;32x ASM Project 0.0 - 2021.12.18
+;32x ASM Project 0.0 - SH2 Master - 2022.01.11
 ;(Compiling a working file)
 ;by Saad Azim
 ;----------------------------------------------------
 ;Master SH2 code
 SH2_M_STACK equ $0603f000
 
-  ;obj $06000000             ;Same thing as org $06000000...?
   org $06000000
 
   ;Jump table $000000-$000120
@@ -30,21 +29,23 @@ SH2_M_STACK equ $0603f000
   dcb.l 19,$00000000        ;Reserved                         $000034-$00007f
   dcb.l 32,error            ;Trap vectors                     $000080-$0000ff
 
+  ;Interrupt vectors. From the looks of things, byte 0 doesn't seem to do much in the 32X.
+
   dc.l error                ;IRQ 1                                    $000100
   dc.l error                ;IRQ 2 & 3                                $000104
   dc.l error                ;IRQ 4 & 5                                $000108
   dc.l error                ;PWM interrupt (IRQ 6 & 7)                $00010c
   dc.l error                ;Command interrupt (IRQ 8 & 9)            $000110
-  dc.l error                ;IRQ 10 & 11)                             $000114
-  dc.l error                ;IRQ 12 & 13)                             $000118
-  dc.l error                ;IRQ 14 & 15)                             $00011c
+  dc.l error                ;HBlank interrupt (IRQ 10 & 11)           $000114
+  dc.l error                ;VBlank interrupt (IRQ 12 & 13)           $000118
+  dc.l error                ;VRes interrupt (IRQ 14 & 15)             $00011c
 
   ;Start of code at $000120
 masterColdStart:
 
   ;**NOTE**
   ;The SH2 only supports 8-bit values for immediate MOV instructions, i.e. MOV #$E2,Rn
-  ;The assembler deals with 16-bit and 32-bit immediate MOV instructions by adding the number at the end of the ROM, and then loading the data by reference. i.e. MOV #$0100,Rn results in $0100 being added to the end of ROM, and the instruction MOV addressOf0100,Rn being used instead
+  ;The assembler deals with 16-bit and 32-bit immediate MOV instructions by adding the number at the end of the ROM, and then loading the data by reference. i.e. MOV #$20004000,R14 results in the assembler appending $20004000 to the end of the ROM, and then using MOV [addressTo$20004000],R14 in the binary file
 
   mov #SH2_M_STACK,r15      ;Load stack address for master to r15
   mov #$20004000,r14        ;Load cache through address for system register to r14
@@ -75,7 +76,7 @@ mainLoop:
   mov r1,@r0                ;Store the value in R1 back into the address at R0
 
   bra mainLoop
-  nop
+  nop                       ;Because of how the SH2 handles things, BRA needs to be followed with a NOP for safety
   align 4
 
 error:
