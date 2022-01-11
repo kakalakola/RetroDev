@@ -13,7 +13,7 @@
 
 ;This is a *very* quick way to get the 32X to boot. In MAME, at any rate, since I don't have any way of testing on original hardware. All this does is setup three 32-bit counters. The 68000, SH2 Master, and SH2 Slave increment their respective work RAM addresses at $ff0000, $06000800, and $06000810.
 
-;Trying to read address $nnnnnn (even in MAME) will cause a crash. -_-
+;Trying to read address $4002 (even in MAME) will cause a crash. -_-
 
 ;Beyond that things seem to be somewhat glitchy. Trying to read OR write to D0 seems to crash MAME. Still, this seems to be the minimum amount (or close to it) of code needed to get a bootable 32X ROM.
 
