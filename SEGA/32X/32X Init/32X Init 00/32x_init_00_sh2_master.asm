@@ -77,9 +77,9 @@ mainLoop:
 
   bra mainLoop
   nop                       ;Because of how the SH2 handles things, BRA needs to be followed with a NOP for safety
-  align 4
+  .align 4
 
 error:
   bra error
   nop
-  align 4
+  .align 4

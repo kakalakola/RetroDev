@@ -55,9 +55,9 @@ mainLoop:
   mov r1,@r0
   bra mainLoop
   nop
-  align 4
+  .align 4
 
 error:
   bra error
   nop
-  align 4
+  .align 4
