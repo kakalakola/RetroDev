@@ -114,6 +114,10 @@ romSize equ (romEnd-$880001)
   jmp error
   jmp error
   jmp error
+  jmp error
+  jmp error
+  jmp error
+  jmp error
 
   ;Reserved by Motorola, 16 entries                             $0302-$0362
   dc.l 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
