@@ -40,8 +40,8 @@
 slaveColdStart:
   mov #0,r0                 ;Clear R0
 
-  mov SH2_S_STACK,r15      ;Load stack address for master to r15
-  mov CACHE_THROUGH,r14        ;Load cache through address for system register to r14
+  mov SH2_S_STACK,r15       ;Load stack address for master to r15
+  mov CACHE_THROUGH,r14     ;Load cache through address for system register to r14
 
   ldc r14,gbr               ;LoaD to Control register
                             ;Load the address stored in r14 to Global Base Register
