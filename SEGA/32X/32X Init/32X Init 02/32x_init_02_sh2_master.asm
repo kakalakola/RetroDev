@@ -285,12 +285,15 @@ lineTableData:
   dc.w $78f0,$7990,$7a30,$7ad0,$7b70,$7c10,$7cb0,$7d50,$7df0,$7e90,$7f30,$7fd0,$8070,$8110,$81b0,$8250
   dc.w $82f0,$8390,$8430,$84d0,$8570,$8610,$86b0,$8750,$87f0,$8890,$8930,$89d0,$8a70,$8b10,$8bb0
   ;dc.w ,$8c50
-  dc.w $8bfe                ;Setting the address of line 224 to anything higher than $8bfe causes
-                            ;the video to render 256 pixels
+
+  ;Line 224 is ... odd ...?
+  ;Setting the address of line 224 to anything between $8C00-$8CFC causes the vdp to render 256 pixels.
+  ;Setting the address to $8CFE causes the VCP to go into 256x480 mode...?!
+  dc.w $8cfe
 
   ;16x14=224 lines total, for NTSC display
 
-  dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000
+  ;dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000
 lineTableDataEnd:
 
 pixelData:
