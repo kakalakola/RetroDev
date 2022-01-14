@@ -287,8 +287,7 @@ lineTableData:
   ;dc.w ,$8c50
 
   ;Line 224 is ... odd ...?
-  ;Setting the address of line 224 to anything between $8C00-$8CFC causes the vdp to render 256 pixels.
-  ;Setting the address to $8CFE causes the VCP to go into 256x480 mode...?!
+  ;Setting the address of line 224 to anything between $8C00-$8CFE causes the vdp to render 256 pixels instead of the standard 320.
   dc.w $00f0
 
   ;16x14=224 lines total, for NTSC display
