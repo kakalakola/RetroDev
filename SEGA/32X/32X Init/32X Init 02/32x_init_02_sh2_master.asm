@@ -186,7 +186,7 @@ error:
 ;----------------------------------------------------
 ;Data block
 ;----------------------------------------------------
-PALETTE_DATA:       dc.l paletteData
+PALETTE_DATA:       dc.l paletteData 
 PALETTE_DATA_SIZE:  dc.l paletteDataEnd-paletteData
 F_BUFFER_DATA:      dc.l lineTableData
 F_BUFFER_DATA_SIZE: dc.l pixelDataEnd-lineTableData
@@ -207,14 +207,6 @@ INT_ENABLE:         dc.l %1000000000001000
                          ;|:|:|:ADEN - ADapter Enabled, read only, (32X disabled||32X enabled)
                          ;|xxxxx
                          ;FM - Frame buffer access Mode (68k||SH2)
-
-;Video mode control:
-;$4100
-; Demo 80810000
-; MK2  80010000
-;$4104
-; Demo 00ffff00
-; MK2  0fffe600
 
 ;Video mode control, written to $4100
 VIDEO_ENABLE:         dc.l %1000000000000001
@@ -258,10 +250,14 @@ CT_SYS_REG_ADDR:    dc.l $20004000
 CT_PALETTE_ADDR:    dc.l $20004200
 CT_F_BUFFER_ADDR:   dc.l $24000000
 
-LOOP_COUNTER:       dc.l $26000800
-VBLANK_COUNTER:     dc.l $26000804
+;The old address for the counters, at $26000800 & $26000804 put them in the middle of pixel data, causing a visual glitch. Adding some blank area for the counters to operate in should fix that.
 
-
+LOOP_COUNTER:       dc.l $20000000+loopCounter
+VBLANK_COUNTER:     dc.l $20000000+loopCounter+4
+  .align 16
+loopCounter:
+  
+  .org $06000300
 ;----------------------------------------------------
 ;Image data
 ;----------------------------------------------------
