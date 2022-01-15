@@ -1,5 +1,5 @@
 ;----------------------------------------------------
-;32x ASM Project 0.2 - SH2 Slave - 2022.01.11
+;32x ASM Project 0.2 - SH2 Slave - 2022.01.15
 ;(Drawing an image)
 ;by Saad Azim
 ;----------------------------------------------------
@@ -65,4 +65,3 @@ error:
 SH2_S_STACK:    dc.l $0603ef00
 CACHE_THROUGH:  dc.l $20004000
 LOOP_COUNTER:   dc.l $26000240
-  .org $06000300
