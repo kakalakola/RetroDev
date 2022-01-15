@@ -1,5 +1,5 @@
 ;----------------------------------------------------
-;32x ASM Project 0.2 - SH2 Master - 2022.01.11
+;32x ASM Project 0.2 - SH2 Master - 2022.01.15
 ;(Drawing an image)
 ;by Saad Azim
 ;----------------------------------------------------
@@ -207,14 +207,14 @@ INT_ENABLE:         dc.l %1000000000001000
                          ;FM - Frame buffer access Mode (68k||SH2)
 
 ;Video mode control, written to $4100
-VIDEO_ENABLE:         dc.l %1000000000000001
-                           ;|:|:|:|:|:|:|:|:
-                           ;|:|:|:|:|:|:|:Bitmap mode (video off|packed pixel|direct color|run length)
-                           ;|:|:|:|:|:xxxx
-                           ;|:|:|:|:|240 line mode (224 lines [default]|240 lines)
-                           ;|:|:|:|:Screen priority (Genesis > 32X [default]|32X > Genesis)
-                           ;|xxxxxxx
-                           ;Video mode (Pal|NTSC)
+VIDEO_ENABLE:       dc.l %1000000000000001
+                         ;|:|:|:|:|:|:|:|:
+                         ;|:|:|:|:|:|:|:Bitmap mode (video off|packed pixel|direct color|run length)
+                         ;|:|:|:|:|:xxxx
+                         ;|:|:|:|:|240 line mode (224 lines [default]|240 lines)
+                         ;|:|:|:|:Screen priority (Genesis > 32X [default]|32X > Genesis)
+                         ;|xxxxxxx
+                         ;Video mode (Pal|NTSC)
 
 ;Frame buffer switch/control, written to $410a
 F_BUFFER_SWAP:      dc.l %0000000000000001
@@ -267,7 +267,8 @@ paletteData:
   dc.w $043c,$085c,$109d,$295d,$39de,$529e,$631f,$6f7f,$7bdf,$7fff,$6739,$7fff,$5294,$7fff,$7fff,$739c
 paletteDataEnd:
 
-lineTableData:
+;Line table contains the starting address>>1 of each line (320 pixels) of data. For example, the pixel data starts at address $01e0 in frame buffer, but the line table data for that address is $00f0.
+lineTableData:              ;$04000000
   dc.w $00f0,$0190,$0230,$02d0,$0370,$0410,$04b0,$0550,$05f0,$0690,$0730,$07d0,$0870,$0910,$09b0,$0a50
   dc.w $0af0,$0b90,$0c30,$0cd0,$0d70,$0e10,$0eb0,$0f50,$0ff0,$1090,$1130,$11d0,$1270,$1310,$13b0,$1450
   dc.w $14f0,$1590,$1630,$16d0,$1770,$1810,$18b0,$1950,$19f0,$1a90,$1b30,$1bd0,$1c70,$1d10,$1db0,$1e50
@@ -280,20 +281,21 @@ lineTableData:
   dc.w $5af0,$5b90,$5c30,$5cd0,$5d70,$5e10,$5eb0,$5f50,$5ff0,$6090,$6130,$61d0,$6270,$6310,$63b0,$6450
   dc.w $64f0,$6590,$6630,$66d0,$6770,$6810,$68b0,$6950,$69f0,$6a90,$6b30,$6bd0,$6c70,$6d10,$6db0,$6e50
   dc.w $6ef0,$6f90,$7030,$70d0,$7170,$7210,$72b0,$7350,$73f0,$7490,$7530,$75d0,$7670,$7710,$77b0,$7850
-  dc.w $78f0,$7990,$7a30,$7ad0,$7b70,$7c10,$7cb0,$7d50,$7df0,$7e90,$7f30,$7fd0,$8070,$8110,$81b0,$8250
+  dc.w $78f0,$7990,$7a30,$7ad0,$7b70,$7c10,$7cb0,$7d50,$7df0,$7e90,$7f30,$7fd0,$8070,$8110,$81b0,$8250 ;Line 208
   dc.w $82f0,$8390,$8430,$84d0,$8570,$8610,$86b0,$8750,$87f0,$8890,$8930,$89d0,$8a70,$8b10,$8bb0
   ;dc.w ,$8c50
 
-  ;Line 224 is ... odd ...?
-  ;Setting the address of line 224 to anything between $8C00-$8CFE causes the vdp to render 256 pixels instead of the standard 320.
-  dc.w $00f0
+  ;Line 208, 224, 240, 256, and 272 are ... odd ...?
+  ;Writing anything between $8C00 and $8CBF to address in increments of $20 (ie $0020, $0040, etc) from $0020 to $D4B0 will cause the screen to render 256 pixels instead of the standard 320 pixels. $D4D0 & onward seems to be fine.
+
+  dc.w $00f0                ;$040001bf
 
   ;16x14=224 lines total, for NTSC display
 
-  ;dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000
+  dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000 ;240 lines
 lineTableDataEnd:
 
-pixelData:
+pixelData:                  ;$040001e0
   dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000
   dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000
   dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000
@@ -1981,6 +1983,8 @@ pixelData:
   dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000
   dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000
   dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000
+  
+  ;Writing $8CFE to address in units of $20 does not affect rendering from this point on
   dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000
   dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000
   dc.w $0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000,$0000
