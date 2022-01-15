@@ -4,8 +4,6 @@
 ;by Saad Azim
 ;----------------------------------------------------
 
-;I just want to point out, the sice of this file is 257 Kb
-
 ;Master SH2 code
   org $06000000
 
