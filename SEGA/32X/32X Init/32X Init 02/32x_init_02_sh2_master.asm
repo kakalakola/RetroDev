@@ -126,8 +126,6 @@ loopCopyFBuffer:
   cmp/ge r2,r0
   bf loopCopyFBuffer
 
-  ;Garbage data shows up at address $0400059C. $0002BA37, visible as 3 stray pixels near the right side in line 3
-
   ;Set GBR to system register
   mov CT_SYS_REG_ADDR,r14
   ldc r14,gbr
