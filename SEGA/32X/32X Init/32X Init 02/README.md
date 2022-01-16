@@ -1,4 +1,4 @@
-#32X Init 01
+# 32X Init 02 #
 
 Putting a picture on screen.
 There are still a few issues to work out though.
