@@ -57,7 +57,7 @@ romSize equ (romEnd-$880001)
   dc.b "SEGA 32X        "   ;Console name 32x                         $0100
                             ;Must be 16 characters
   dc.b "(C)LBP  "           ;(C)+Firm name/code, 8 characters         $0110
-  dc.b "2022.DEC"           ;Build date (YYYY.MMM), 8 characters      $0118   
+  dc.b "2022.JAN"           ;Build date (YYYY.MMM), 8 characters      $0118   
 
   dc.b "SEGA 32X COMPILATION/INITIALIZATION TEST 02     ";            $0120
                             ;Domestic name, 48 characters
