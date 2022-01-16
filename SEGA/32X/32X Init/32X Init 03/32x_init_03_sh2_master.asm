@@ -1,5 +1,5 @@
 ;----------------------------------------------------
-;32x ASM Project 0.3 - SH2 Master - 2022.01.15
+;32x ASM Project 0.3 - SH2 Master - 2022.01.16
 ;(DMA, frame swapping, and line table optimizations)
 ;by Saad Azim
 ;----------------------------------------------------
