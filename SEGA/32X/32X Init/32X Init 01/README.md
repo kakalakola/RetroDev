@@ -1,4 +1,4 @@
-#32X Init 01
+# 32X Init 01 #
 
 Timing things with VBlanks. Nothing too fancy.
 
