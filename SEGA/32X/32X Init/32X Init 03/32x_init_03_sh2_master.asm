@@ -137,11 +137,11 @@ loopWaitDMA0:
   cmp/eq r1,r0              ;See if the last 2 bits are set, eg R0==3
   bf loopWaitDMA0
 
-  mov.b #3,r1               ;The last 2 bits of $FFFFFF8C need to be checked
+  mov.b #3,r1               ;The last 2 bits of $FFFFFF9C need to be checked
 loopWaitDMA1:
   mov @($1c,gbr),r0 
-  and r1,r0                 ;Mask out all the unnecessary bits
-  cmp/eq r1,r0              ;See if the last 2 bits are set, eg R0==3
+  and r1,r0
+  cmp/eq r1,r0
   bf loopWaitDMA1
 
   ;Set GBR to system register
