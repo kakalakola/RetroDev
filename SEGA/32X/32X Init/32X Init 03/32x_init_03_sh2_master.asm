@@ -116,7 +116,7 @@ waitForGenesis:
   mov r0,@($30,gbr)         ;Writing #1 to $FFFFFFB0 enables the DMA, on both channels if they're set
                             ;As long as the value at $FFFFFB0==1, writing a non-zero value to DMA amount, then changing byte 1 of DMA_TRANSFER_SIZE_n to 0 will automatically start the next DMA.
 
-  ;Copy line table & pixel data to frame buffer 1
+  ;Copy line table & pixel data to frame buffer
   mov F_BUFFER_DATA,r0
   mov r0,@($10,gbr)
   mov CT_F_BUFFER_ADDR,r0
