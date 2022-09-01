@@ -777,7 +777,7 @@ mode7MapEnd:
 
 .org $7fb0
   ;Beginning of additional header info area
-  .dw $0000                 ;Marker code, 2 bytes                     $7fb0-$7fb1
+  .dw $0000                 ;New licensee code, 2 bytes               $7fb0-$7fb1
   .db "    "                ;Game code, 4 bytes                       $7fb2-$7fb5
 
   .dw $0000,$0000,$0000     ;Unused, 7 bytes                          $7fb6-$7fbc
@@ -806,7 +806,7 @@ mode7MapEnd:
 
   .db $00                   ;SRAM size                                      $7fd8
   .db $01                   ;Country code                                   $7fd9
-  .db $33                   ;Licensee code...? Fixed value?                 $7fda
+  .db $33                   ;Licensee code                                  $7fda
                             ;($33==Extended header ID at $7fb2-$7fb5)
   .db $00                   ;Vers. code 1.xx i.e. $00==1.00,$01==1.01, etc. $7fdb
   ;16-bit values, largest allowed, need to be defined as words ONLY

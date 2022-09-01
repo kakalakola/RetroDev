@@ -11,4 +11,5 @@ Project listing:
  - GB Init 07 - Window register and multiple scanline interrupts
  - GB Init 08 - Working with sprites
  - GB Init 09 - Working with meta sprites
- - GB Init 10 - Spawning/Despawning a "bullet"
+ - GB Init 10 - CALLs, data compression, and motion vectors
+ - GB Init 11 - Spawning/Despawning a "bullet"
