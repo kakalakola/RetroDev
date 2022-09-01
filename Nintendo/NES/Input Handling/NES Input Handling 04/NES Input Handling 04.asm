@@ -4,7 +4,7 @@
 ;by Saad Azim
 ;----------------------------------------------------
 
-;Uses slightly cleaner code
+;Now you're playing with motion vectors
 
 ;iNES header 2.0, 16 bytes                                               (Byte $00-$03)
 .db "NES",$1a,$34,$01,$01,$08,$00,$0f,$00,$00,$00,$00,$00,$00
