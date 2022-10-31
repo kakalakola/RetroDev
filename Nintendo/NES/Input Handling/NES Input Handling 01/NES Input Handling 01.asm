@@ -1,5 +1,5 @@
 ;----------------------------------------------------
-;NES INPUT HANDLING 0.1 - 2022.08.30
+;NES INPUT HANDLING 0.1 - 2022.10.31
 ;(Reading input on the NES from both controllers)
 ;by Saad Azim
 ;----------------------------------------------------
