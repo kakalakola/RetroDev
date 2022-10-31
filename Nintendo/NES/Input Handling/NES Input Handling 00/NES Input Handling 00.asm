@@ -7,19 +7,20 @@
 ;This is a simple program that reads input from controller 1, and then stores the result to $0010 in RAM. The status of B, A, Select, and Start are stored in the upper four bytes, the status of the d-pad is stored in the lower four bytes
 
 ;iNES header 2.0, 16 bytes                                               (Byte $00-$03)
-.db "NES",$1a,$34,$01,$01,$08,$00,$0f,$00,$00,$00,$00,$00,$00
-; - 1 PRG-ROM bank (8 Kb)
+.db "NES",$1a,$01,$01,$01,$08,$00,$00,$00,$00,$00,$00,$00,$01
+; - 2 PRG-ROM bank (16 Kb)
 ; - 1 CHR-ROM (8 Kb)
 ; - Horizontal mirrorring, no mappers, mirrorring, SRAM, trainer, etc
 ; - No PRG-RAM, no CHR-RAM
 ; - NTSC timing
 ; - No expansion device present/used
+; - Input type - Standard Controllers
 
 ;----------------------------------------------------
 ;PRG-ROM
-;$e000-$ffff - 8 Kb
+;$c000-$ffff - 16 Kb
 ;----------------------------------------------------
-.org $e000
+.org $c000
 
 reset:
   sei                       ;Disable IRQs
@@ -161,6 +162,8 @@ irq:
 .word nmi,reset,irq         ;Jump table for vBlank/NMI, reset, & IRQ
 
 ;Definitions for PRG-ROM
+;This is not data. They are *not* present in the ROM.
+
 ;_FILL_COLOR=$0f              ;Black
 ;_FILL_COLOR=$2d              ;Dark grey
 ;_FILL_COLOR=$24              ;Magenta
