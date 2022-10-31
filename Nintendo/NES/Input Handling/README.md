@@ -1,6 +1,6 @@
 # NES Input Handler #
 
-Update 20221030
+Update 2022.10.30
 - Changed the CHR ROM size from 8 Kb (which works in MESEN, but causes MAME to throw an error) to 16 Kb. As of this update, the ROMS have been tested with, and works in MAME, MESEN, and NESTICLE. Though admittedly, NESTICLE does not support the NES Four Score.™
 
 A series of examples on how to read data from the controller ports ($4016 & $4017)
