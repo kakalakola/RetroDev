@@ -1,5 +1,5 @@
 ;----------------------------------------------------
-;NES INPUT HANDLING 0.5 - 2022.09.01
+;NES INPUT HANDLING 0.5 - 2022.10.31
 ;(Working with the NES Four Score)
 ;by Saad Azim
 ;----------------------------------------------------
@@ -7,18 +7,20 @@
 ;Using the NES Four Score™
 
 ;iNES header 2.0, 16 bytes                                               (Byte $00-$03)
-.db "NES",$1a,$34,$01,$01,$08,$00,$0f,$00,$00,$00,$00,$00,$00
-; - 1 PRG-ROM bank (8 Kb), 1 CHR-ROM (8 Kb)
+.db "NES",$1a,$01,$01,$01,$08,$00,$00,$00,$00,$00,$00,$00,$01
+; - 2 PRG-ROM bank (16 Kb)
+; - 1 CHR-ROM (8 Kb)
 ; - Horizontal mirrorring, no mappers, mirrorring, SRAM, trainer, etc
 ; - No PRG-RAM, no CHR-RAM
 ; - NTSC timing
 ; - No expansion device present/used
+; - Input type - Standard Controllers
 
 ;----------------------------------------------------
 ;PRG-ROM
-;$e000-$ffff - 8 Kb
+;$c000-$ffff - 16 Kb
 ;----------------------------------------------------
-.org $e000
+.org $c000
 
 reset:
   sei                       ;Disable IRQs
