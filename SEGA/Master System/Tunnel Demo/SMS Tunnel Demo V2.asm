@@ -201,6 +201,13 @@ cpu z80
   ; - reads from odd addresses return B/Misc register of I/O port
 
 InitSystem:                 ;Self explanatory                         $0100
+
+  ;Disable rendering. Some BIOS leave rendering enabled, which interferes with copying things to VRAM. -_-'
+  ld a,%10100000
+  out ($bf),a
+  ld a,$81
+  out ($bf),a
+
   ;Clear registers
   xor a                     ;Bitwise XOR on A with A, essentially resulting in $00...?
                             ;Resets Carry Negative-carry and Half-carry flag
